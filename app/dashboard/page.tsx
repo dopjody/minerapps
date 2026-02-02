@@ -1,6 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
     Cpu,
@@ -11,35 +13,101 @@ import {
     Bell,
     Search,
     Menu,
+    X,
     TrendingUp,
     Users,
     ShoppingCart,
     Brain,
     Trophy,
-    ArrowRight
+    ArrowRight,
+    ChevronLeft
 } from "lucide-react";
 import MiningRig from "@/components/MiningRig";
 
 export default function Dashboard() {
+    const router = useRouter();
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const navItems = [
+        { name: "Dashboard", icon: LayoutDashboard, active: true },
+        { name: "Mining Hub", icon: Cpu, active: false },
+        { name: "Marketplace", icon: ShoppingCart, active: false },
+        { name: "AI Optimizer", icon: Brain, active: false },
+        { name: "Leaderboard", icon: Trophy, active: false },
+        { name: "Wallet", icon: Wallet, active: false },
+        { name: "Transactions", icon: ArrowUpRight, active: false },
+        { name: "Settings", icon: Settings, active: false },
+    ];
+
     return (
-        <div className="flex min-h-screen bg-quantum-dark text-white">
-            {/* Sidebar */}
+        <div className="flex min-h-screen bg-quantum-dark text-white relative">
+            {/* Mobile Sidebar / Drawer */}
+            <AnimatePresence>
+                {isDrawerOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsDrawerOpen(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] lg:hidden"
+                        />
+                        <motion.aside
+                            initial={{ x: "-100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "-100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed inset-y-0 left-0 w-72 bg-quantum-dark border-r border-white/5 z-[101] p-6 flex flex-col gap-8 lg:hidden"
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="font-orbitron font-bold text-xl tracking-tighter">
+                                    QUANTUM<span className="text-quantum-blue">START</span>
+                                </div>
+                                <button onClick={() => setIsDrawerOpen(false)} className="p-2 rounded-xl hover:bg-white/5">
+                                    <X className="w-6 h-6 text-zinc-400" />
+                                </button>
+                            </div>
+
+                            <nav className="flex flex-col gap-2">
+                                {navItems.map((item) => (
+                                    <button
+                                        key={item.name}
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${item.active
+                                                ? "bg-quantum-blue/10 text-quantum-blue border border-quantum-blue/20"
+                                                : "text-zinc-500 hover:text-white hover:bg-white/5"
+                                            }`}
+                                    >
+                                        <item.icon className="w-5 h-5" />
+                                        <span className="font-medium">{item.name}</span>
+                                    </button>
+                                ))}
+                            </nav>
+
+                            <div className="mt-auto glass-card p-4 rounded-xl border-quantum-purple/20">
+                                <div className="text-xs text-zinc-500 uppercase font-bold mb-2">Active Plan</div>
+                                <div className="text-quantum-purple font-orbitron font-bold">NEBULA TIER</div>
+                                <div className="h-1.5 w-full bg-zinc-800 rounded-full mt-3 overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: "65%" }}
+                                        className="h-full bg-quantum-purple"
+                                    />
+                                </div>
+                                <div className="text-[10px] text-zinc-500 mt-2">65% Progress to Payout</div>
+                            </div>
+                        </motion.aside>
+                    </>
+                )}
+            </AnimatePresence>
+
+            {/* Desktop Sidebar */}
             <aside className="hidden lg:flex w-64 border-r border-white/5 flex-col p-6 gap-8 overflow-y-auto">
                 <div className="font-orbitron font-bold text-xl tracking-tighter">
                     QUANTUM<span className="text-quantum-blue">START</span>
                 </div>
 
                 <nav className="flex flex-col gap-2">
-                    {[
-                        { name: "Dashboard", icon: LayoutDashboard, active: true },
-                        { name: "Mining Hub", icon: Cpu, active: false },
-                        { name: "Marketplace", icon: ShoppingCart, active: false },
-                        { name: "AI Optimizer", icon: Brain, active: false },
-                        { name: "Leaderboard", icon: Trophy, active: false },
-                        { name: "Wallet", icon: Wallet, active: false },
-                        { name: "Transactions", icon: ArrowUpRight, active: false },
-                        { name: "Settings", icon: Settings, active: false },
-                    ].map((item) => (
+                    {navItems.map((item) => (
                         <button
                             key={item.name}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${item.active
@@ -68,10 +136,18 @@ export default function Dashboard() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col h-screen overflow-hidden">
+            <main className="flex-1 flex flex-col h-screen overflow-hidden pb-20 lg:pb-0">
                 {/* Header */}
-                <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-quantum-dark/50 backdrop-blur-md z-20">
-                    <div className="flex lg:hidden font-orbitron font-bold text-lg">QS</div>
+                <header className="h-20 border-b border-white/5 flex items-center justify-between px-6 md:px-8 bg-quantum-dark/50 backdrop-blur-md z-20">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setIsDrawerOpen(true)}
+                            className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 hover:border-quantum-blue/30 transition-all"
+                        >
+                            <Menu className="w-6 h-6 text-quantum-blue" />
+                        </button>
+                        <div className="font-orbitron font-bold text-lg lg:hidden">QS</div>
+                    </div>
 
                     <div className="hidden md:flex items-center bg-zinc-900/50 border border-white/10 rounded-full px-4 py-2 w-96">
                         <Search className="w-4 h-4 text-zinc-500 mr-2" />
@@ -102,7 +178,7 @@ export default function Dashboard() {
                 </header>
 
                 {/* Dashboard Content */}
-                <div className="p-8 space-y-8 overflow-y-auto flex-1">
+                <div className="p-6 md:p-8 space-y-8 overflow-y-auto flex-1">
                     {/* Top Stats Card Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[
@@ -134,7 +210,7 @@ export default function Dashboard() {
                             <div className="glass-card rounded-3xl p-8 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
                                 <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-quantum-blue/5 blur-[80px] rounded-full" />
 
-                                <div className="flex-1 space-y-6 z-10 w-full">
+                                <div className="flex-1 space-y-6 z-10 w-full text-center md:text-left">
                                     <div>
                                         <h3 className="text-2xl font-orbitron font-bold">Node <span className="text-quantum-blue">B-842</span></h3>
                                         <p className="text-zinc-400 text-sm italic">"Infrastructure is stable and performing above baseline."</p>
@@ -143,7 +219,7 @@ export default function Dashboard() {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
                                             <div className="text-[10px] text-zinc-500 uppercase font-bold">Quantum Core</div>
-                                            <div className="text-lg font-orbitron font-bold text-quantum-blue">ACTIVE</div>
+                                            <div className="text-lg font-orbitron font-bold text-quantum-blue text-glow">ACTIVE</div>
                                         </div>
                                         <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
                                             <div className="text-[10px] text-zinc-500 uppercase font-bold">Network Delay</div>
@@ -156,7 +232,7 @@ export default function Dashboard() {
                                     </button>
                                 </div>
 
-                                <div className="relative flex justify-center items-center">
+                                <div className="relative flex justify-center items-center w-full md:w-auto">
                                     <MiningRig />
                                 </div>
                             </div>
@@ -246,6 +322,37 @@ export default function Dashboard() {
                     </div>
                 </div>
             </main>
+
+            {/* Floating Bottom Navigation (Mobile Only) */}
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-50 lg:hidden">
+                <div className="bg-quantum-dark/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 flex items-center justify-around shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                    <button
+                        onClick={() => router.back()}
+                        className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex flex-col items-center gap-1"
+                    >
+                        <ChevronLeft className="w-5 h-5" />
+                        <span className="text-[10px] font-bold uppercase">Back</span>
+                    </button>
+
+                    <button className="p-3 rounded-xl text-quantum-blue bg-quantum-blue/10 border border-quantum-blue/20 flex flex-col items-center gap-1 transition-all">
+                        <LayoutDashboard className="w-5 h-5" />
+                        <span className="text-[10px] font-bold uppercase">Home</span>
+                    </button>
+
+                    <button className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex flex-col items-center gap-1">
+                        <Wallet className="w-5 h-5" />
+                        <span className="text-[10px] font-bold uppercase">Wallet</span>
+                    </button>
+
+                    <button
+                        onClick={() => setIsDrawerOpen(true)}
+                        className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex flex-col items-center gap-1"
+                    >
+                        <Menu className="w-5 h-5" />
+                        <span className="text-[10px] font-bold uppercase">More</span>
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }
