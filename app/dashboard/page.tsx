@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import MobileNavigation from "@/components/MobileNavigation";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -26,7 +26,18 @@ import MiningRig from "@/components/MiningRig";
 
 export default function Dashboard() {
     const router = useRouter();
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    // const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Managed internally by MobileNavigation
+
+    const navItems = [
+        { name: "Dashboard", icon: LayoutDashboard, active: true },
+        { name: "Mining Hub", icon: Cpu, active: false },
+        { name: "Marketplace", icon: ShoppingCart, active: false },
+        { name: "AI Optimizer", icon: Brain, active: false },
+        { name: "Leaderboard", icon: Trophy, active: false },
+        { name: "Wallet", icon: Wallet, active: false },
+        { name: "Transactions", icon: ArrowUpRight, active: false },
+        { name: "Settings", icon: Settings, active: false },
+    ];
 
     const navItems = [
         { name: "Dashboard", icon: LayoutDashboard, active: true },
@@ -41,64 +52,8 @@ export default function Dashboard() {
 
     return (
         <div className="flex min-h-screen bg-quantum-dark text-white relative">
-            {/* Mobile Sidebar / Drawer */}
-            <AnimatePresence>
-                {isDrawerOpen && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsDrawerOpen(false)}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] lg:hidden"
-                        />
-                        <motion.aside
-                            initial={{ x: "-100%" }}
-                            animate={{ x: 0 }}
-                            exit={{ x: "-100%" }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 w-72 bg-zinc-900 border-r border-white/10 z-[200] p-6 flex flex-col gap-8 lg:hidden"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div className="font-orbitron font-bold text-xl tracking-tighter">
-                                    QUANTUM<span className="text-quantum-blue">START</span>
-                                </div>
-                                <button onClick={() => setIsDrawerOpen(false)} className="p-2 rounded-xl hover:bg-white/5">
-                                    <X className="w-6 h-6 text-zinc-400" />
-                                </button>
-                            </div>
-
-                            <nav className="flex flex-col gap-2">
-                                {navItems.map((item) => (
-                                    <button
-                                        key={item.name}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${item.active
-                                            ? "bg-quantum-blue/10 text-quantum-blue border border-quantum-blue/20"
-                                            : "text-zinc-500 hover:text-white hover:bg-white/5"
-                                            }`}
-                                    >
-                                        <item.icon className="w-5 h-5" />
-                                        <span className="font-medium">{item.name}</span>
-                                    </button>
-                                ))}
-                            </nav>
-
-                            <div className="mt-auto glass-card p-4 rounded-xl border-quantum-purple/20">
-                                <div className="text-xs text-zinc-500 uppercase font-bold mb-2">Active Plan</div>
-                                <div className="text-quantum-purple font-orbitron font-bold">NEBULA TIER</div>
-                                <div className="h-1.5 w-full bg-zinc-800 rounded-full mt-3 overflow-hidden">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: "65%" }}
-                                        className="h-full bg-quantum-purple"
-                                    />
-                                </div>
-                                <div className="text-[10px] text-zinc-500 mt-2">65% Progress to Payout</div>
-                            </div>
-                        </motion.aside>
-                    </>
-                )}
-            </AnimatePresence>
+            {/* Portal-based Mobile Navigation */}
+            <MobileNavigation />
 
             {/* Desktop Sidebar */}
             <aside className="hidden lg:flex w-64 border-r border-white/5 flex-col p-6 gap-8 overflow-y-auto">
@@ -318,45 +273,6 @@ export default function Dashboard() {
                 </div>
             </main>
 
-            {/* DEBUG: Floating Bottom Navigation - MOVED TO ROOT with INLINE STYLES */}
-            <div
-                style={{
-                    position: 'fixed',
-                    bottom: '20px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    zIndex: 999999,
-                    width: '90%',
-                    maxWidth: '300px',
-                    display: 'flex',
-                    justifyContent: 'center'
-                }}
-            >
-                <div style={{ backgroundColor: 'red', border: '4px solid yellow', borderRadius: '16px', padding: '16px', width: '100%', display: 'flex', justifyContent: 'space-around', boxShadow: '0 0 50px rgba(0,0,0,0.8)' }}>
-                    <button onClick={() => { console.log('Back clicked'); router.back(); }} style={{ color: 'white', fontWeight: 'bold' }}>BACK</button>
-                    <button style={{ color: 'white', fontWeight: 'bold' }}>HOME</button>
-                    <button style={{ color: 'white', fontWeight: 'bold' }}>WALLET</button>
-                    <button onClick={() => setIsDrawerOpen(true)} style={{ color: 'white', fontWeight: 'bold' }}>MORE</button>
-                </div>
-            </div>
-
-            {/* DEBUG: Hamburger - MOVED TO ROOT with INLINE STYLES */}
-            <div
-                style={{
-                    position: 'fixed',
-                    top: '20px',
-                    left: '20px',
-                    zIndex: 999999,
-                    display: 'block' // Ensure display block
-                }}
-            >
-                <button
-                    onClick={() => { console.log('Menu clicked'); setIsDrawerOpen(true); }}
-                    style={{ backgroundColor: 'red', border: '4px solid yellow', padding: '16px', borderRadius: '12px', color: 'white', fontWeight: 'bold' }}
-                >
-                    MENU
-                </button>
-            </div>
         </div>
     );
 }
