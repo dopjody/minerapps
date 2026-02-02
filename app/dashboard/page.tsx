@@ -39,17 +39,6 @@ export default function Dashboard() {
         { name: "Settings", icon: Settings, active: false },
     ];
 
-    const navItems = [
-        { name: "Dashboard", icon: LayoutDashboard, active: true },
-        { name: "Mining Hub", icon: Cpu, active: false },
-        { name: "Marketplace", icon: ShoppingCart, active: false },
-        { name: "AI Optimizer", icon: Brain, active: false },
-        { name: "Leaderboard", icon: Trophy, active: false },
-        { name: "Wallet", icon: Wallet, active: false },
-        { name: "Transactions", icon: ArrowUpRight, active: false },
-        { name: "Settings", icon: Settings, active: false },
-    ];
-
     return (
         <div className="flex min-h-screen bg-quantum-dark text-white relative">
             {/* Portal-based Mobile Navigation */}
