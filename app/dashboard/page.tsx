@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import MobileNavigation from "@/components/MobileNavigation";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
@@ -20,13 +22,53 @@ import {
     Brain,
     Trophy,
     ArrowRight,
-    ChevronLeft
+    ChevronLeft,
+    Copy,
+    Loader
 } from "lucide-react";
 import MiningRig from "@/components/MiningRig";
 
+// Define Profile Interface
+interface Profile {
+    username: string;
+    referral_code: string;
+    balance_btc: number;
+    balance_doge: number;
+    hash_power: string;
+    tier: string;
+    referral_count: number;
+}
+
 export default function Dashboard() {
     const router = useRouter();
-    // const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Managed internally by MobileNavigation
+    const supabase = createClient();
+    const [loading, setLoading] = useState(true);
+    const [profile, setProfile] = useState<Profile | null>(null);
+
+    // Fetch User Data
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+            if (authError || !user) {
+                router.push('/login');
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+
+            if (data) {
+                setProfile(data);
+            }
+            setLoading(false);
+        };
+
+        getUser();
+    }, [router, supabase]);
 
     const navItems = [
         { name: "Dashboard", icon: LayoutDashboard, active: true },
@@ -38,6 +80,14 @@ export default function Dashboard() {
         { name: "Transactions", icon: ArrowUpRight, active: false },
         { name: "Settings", icon: Settings, active: false },
     ];
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-quantum-dark flex items-center justify-center text-quantum-blue">
+                <Loader className="w-10 h-10 animate-spin" />
+            </div>
+        );
+    }
 
     return (
         <div className="flex min-h-screen bg-quantum-dark text-white relative">
@@ -67,7 +117,7 @@ export default function Dashboard() {
 
                 <div className="mt-auto glass-card p-4 rounded-xl border-quantum-purple/20">
                     <div className="text-xs text-zinc-500 uppercase font-bold mb-2">Active Plan</div>
-                    <div className="text-quantum-purple font-orbitron font-bold">NEBULA TIER</div>
+                    <div className="text-quantum-purple font-orbitron font-bold uppercase">{profile?.tier || 'Nebula'} TIER</div>
                     <div className="h-1.5 w-full bg-zinc-800 rounded-full mt-3 overflow-hidden">
                         <motion.div
                             initial={{ width: 0 }}
@@ -104,12 +154,12 @@ export default function Dashboard() {
                         </button>
                         <div className="flex items-center gap-3 pl-4 border-l border-white/10">
                             <div className="flex flex-col items-end hidden sm:flex">
-                                <span className="text-sm font-bold">Alex Rivera</span>
-                                <span className="text-[10px] text-zinc-500 uppercase tracking-tighter">Pro Miner</span>
+                                <span className="text-sm font-bold">{profile?.username || 'User'}</span>
+                                <span className="text-[10px] text-zinc-500 uppercase tracking-tighter">Verified Miner</span>
                             </div>
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-quantum-blue to-quantum-purple p-[1px]">
                                 <div className="w-full h-full rounded-xl bg-quantum-dark flex items-center justify-center font-bold text-xs uppercase">
-                                    AR
+                                    {profile?.username?.substring(0, 2) || 'QS'}
                                 </div>
                             </div>
                         </div>
@@ -121,10 +171,10 @@ export default function Dashboard() {
                     {/* Top Stats Card Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[
-                            { label: "Total Balance", value: "0.482 BTC", sub: "+$420.50 Today", icon: Wallet, color: "text-quantum-blue" },
-                            { label: "Mining Hashrate", value: "48.2 TH/s", sub: "Status: 99.9% Up", icon: Cpu, color: "text-quantum-green" },
-                            { label: "Referral Bonus", value: "12,450 DOGE", sub: "12 Actives", icon: Users, color: "text-quantum-purple" },
-                            { label: "Global Rank", value: "#142", sub: "Top 2% Globally", icon: Trophy, color: "text-quantum-pink" },
+                            { label: "Total Balance", value: `${profile?.balance_btc || '0.000'} BTC`, sub: "+$0.00 Today", icon: Wallet, color: "text-quantum-blue" },
+                            { label: "Mining Hashrate", value: profile?.hash_power || "0 TH/s", sub: "Status: Active", icon: Cpu, color: "text-quantum-green" },
+                            { label: "Referral Bonus", value: `${profile?.balance_doge || '0'} DOGE`, sub: `${profile?.referral_count || 0} Actives`, icon: Users, color: "text-quantum-purple" },
+                            { label: "Global Rank", value: "#---", sub: "Top 10% Globally", icon: Trophy, color: "text-quantum-pink" },
                         ].map((stat, i) => (
                             <motion.div
                                 key={i}
@@ -176,26 +226,35 @@ export default function Dashboard() {
                                 </div>
                             </div>
 
-                            {/* AI Optimization Section */}
+                            {/* Referral Code Section (New) */}
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
-                                className="glass-card rounded-3xl p-8 border-quantum-blue/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 group"
+                                className="glass-card rounded-3xl p-8 border-quantum-purple/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 group"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-quantum-blue/5 via-transparent to-transparent opacity-50" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-quantum-purple/5 via-transparent to-transparent opacity-50" />
                                 <div className="flex items-center gap-6 z-10">
-                                    <div className="w-16 h-16 rounded-full bg-quantum-blue/10 flex items-center justify-center border border-quantum-blue/30 group-hover:scale-110 transition-transform">
-                                        <Brain className="w-8 h-8 text-quantum-blue" />
+                                    <div className="w-16 h-16 rounded-full bg-quantum-purple/10 flex items-center justify-center border border-quantum-purple/30">
+                                        <Users className="w-8 h-8 text-quantum-purple" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-orbitron font-bold">Quantum AI <span className="text-quantum-blue">Optimizer</span></h3>
-                                        <p className="text-zinc-400 text-sm max-w-md">Our neural network is analyzing 2,400+ nodes to maximize your hash efficiency. AI boost currently active at <span className="text-quantum-green font-bold">+12.5%</span>.</p>
+                                        <h3 className="text-xl font-orbitron font-bold">Referral <span className="text-quantum-purple">Network</span></h3>
+                                        <p className="text-zinc-400 text-sm max-w-md">Your invitation code. Earn 15% of all mined blocks from your node network.</p>
                                     </div>
                                 </div>
-                                <div className="z-10 w-full md:w-auto">
-                                    <button className="w-full md:w-auto px-6 py-3 rounded-xl border border-quantum-blue/50 text-quantum-blue font-bold text-xs uppercase tracking-widest hover:bg-quantum-blue hover:text-quantum-dark transition-all">
-                                        Optimize Rig
-                                    </button>
+                                <div className="z-10 w-full md:w-auto flex flex-col gap-2">
+                                    <div className="flex items-center gap-2 bg-black/50 p-2 rounded-xl border border-white/10">
+                                        <span className="font-orbitron font-bold text-quantum-white px-2 tracking-widest">
+                                            {profile?.referral_code || 'LOADING...'}
+                                        </span>
+                                        <button
+                                            onClick={() => navigator.clipboard.writeText(profile?.referral_code || '')}
+                                            className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                                        >
+                                            <Copy className="w-4 h-4 text-zinc-400" />
+                                        </button>
+                                    </div>
+                                    <div className="text-[10px] text-center text-zinc-500 uppercase font-bold tracking-wider">Share Code</div>
                                 </div>
                             </motion.div>
                         </div>
