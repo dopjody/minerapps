@@ -57,7 +57,7 @@ export default function Dashboard() {
                             animate={{ x: 0 }}
                             exit={{ x: "-100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 w-72 bg-quantum-dark border-r border-white/5 z-[101] p-6 flex flex-col gap-8 lg:hidden"
+                            className="fixed inset-y-0 left-0 w-72 bg-zinc-900 border-r border-white/10 z-[200] p-6 flex flex-col gap-8 lg:hidden"
                         >
                             <div className="flex items-center justify-between">
                                 <div className="font-orbitron font-bold text-xl tracking-tighter">
@@ -73,8 +73,8 @@ export default function Dashboard() {
                                     <button
                                         key={item.name}
                                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${item.active
-                                                ? "bg-quantum-blue/10 text-quantum-blue border border-quantum-blue/20"
-                                                : "text-zinc-500 hover:text-white hover:bg-white/5"
+                                            ? "bg-quantum-blue/10 text-quantum-blue border border-quantum-blue/20"
+                                            : "text-zinc-500 hover:text-white hover:bg-white/5"
                                             }`}
                                     >
                                         <item.icon className="w-5 h-5" />
@@ -111,8 +111,8 @@ export default function Dashboard() {
                         <button
                             key={item.name}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${item.active
-                                    ? "bg-quantum-blue/10 text-quantum-blue border border-quantum-blue/20"
-                                    : "text-zinc-500 hover:text-white hover:bg-white/5"
+                                ? "bg-quantum-blue/10 text-quantum-blue border border-quantum-blue/20"
+                                : "text-zinc-500 hover:text-white hover:bg-white/5"
                                 }`}
                         >
                             <item.icon className="w-5 h-5" />
@@ -324,8 +324,8 @@ export default function Dashboard() {
             </main>
 
             {/* Floating Bottom Navigation (Mobile Only) */}
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-50 lg:hidden">
-                <div className="bg-quantum-dark/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 flex items-center justify-around shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <div className="fixed bottom-4 left-4 right-4 z-[200] lg:hidden flex justify-center">
+                <div className="w-full max-w-sm bg-zinc-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 flex items-center justify-around shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
                     <button
                         onClick={() => router.back()}
                         className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex flex-col items-center gap-1"
