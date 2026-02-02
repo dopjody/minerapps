@@ -140,13 +140,7 @@ export default function Dashboard() {
                 {/* Header */}
                 <header className="h-20 border-b border-white/5 flex items-center justify-between px-6 md:px-8 bg-quantum-dark/50 backdrop-blur-md z-20">
                     <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setIsDrawerOpen(true)}
-                            className="p-4 rounded-xl bg-red-600 border-4 border-yellow-400 text-white z-[9999] hover:bg-red-700 transition-all font-bold"
-                        >
-                            <Menu className="w-8 h-8" />
-                            <span className="sr-only">Open Menu</span>
-                        </button>
+                        {/* Old Hamburger Removed for Debug */}
                         <div className="font-orbitron font-bold text-lg lg:hidden">QS</div>
                     </div>
 
@@ -324,35 +318,44 @@ export default function Dashboard() {
                 </div>
             </main>
 
-            {/* Floating Bottom Navigation (Mobile Only) */}
-            <div className="fixed bottom-4 left-4 right-4 z-[9999] flex justify-center">
-                <div className="w-full max-w-sm bg-red-600 border-4 border-yellow-400 rounded-2xl p-4 flex items-center justify-around shadow-2xl">
-                    <button
-                        onClick={() => router.back()}
-                        className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex flex-col items-center gap-1"
-                    >
-                        <ChevronLeft className="w-5 h-5" />
-                        <span className="text-[10px] font-bold uppercase">Back</span>
-                    </button>
-
-                    <button className="p-3 rounded-xl text-quantum-blue bg-quantum-blue/10 border border-quantum-blue/20 flex flex-col items-center gap-1 transition-all">
-                        <LayoutDashboard className="w-5 h-5" />
-                        <span className="text-[10px] font-bold uppercase">Home</span>
-                    </button>
-
-                    <button className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex flex-col items-center gap-1">
-                        <Wallet className="w-5 h-5" />
-                        <span className="text-[10px] font-bold uppercase">Wallet</span>
-                    </button>
-
-                    <button
-                        onClick={() => setIsDrawerOpen(true)}
-                        className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex flex-col items-center gap-1"
-                    >
-                        <Menu className="w-5 h-5" />
-                        <span className="text-[10px] font-bold uppercase">More</span>
-                    </button>
+            {/* DEBUG: Floating Bottom Navigation - MOVED TO ROOT with INLINE STYLES */}
+            <div
+                style={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 999999,
+                    width: '90%',
+                    maxWidth: '300px',
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}
+            >
+                <div style={{ backgroundColor: 'red', border: '4px solid yellow', borderRadius: '16px', padding: '16px', width: '100%', display: 'flex', justifyContent: 'space-around', boxShadow: '0 0 50px rgba(0,0,0,0.8)' }}>
+                    <button onClick={() => { console.log('Back clicked'); router.back(); }} style={{ color: 'white', fontWeight: 'bold' }}>BACK</button>
+                    <button style={{ color: 'white', fontWeight: 'bold' }}>HOME</button>
+                    <button style={{ color: 'white', fontWeight: 'bold' }}>WALLET</button>
+                    <button onClick={() => setIsDrawerOpen(true)} style={{ color: 'white', fontWeight: 'bold' }}>MORE</button>
                 </div>
+            </div>
+
+            {/* DEBUG: Hamburger - MOVED TO ROOT with INLINE STYLES */}
+            <div
+                style={{
+                    position: 'fixed',
+                    top: '20px',
+                    left: '20px',
+                    zIndex: 999999,
+                    display: 'block' // Ensure display block
+                }}
+            >
+                <button
+                    onClick={() => { console.log('Menu clicked'); setIsDrawerOpen(true); }}
+                    style={{ backgroundColor: 'red', border: '4px solid yellow', padding: '16px', borderRadius: '12px', color: 'white', fontWeight: 'bold' }}
+                >
+                    MENU
+                </button>
             </div>
         </div>
     );
