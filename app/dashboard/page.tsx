@@ -142,9 +142,10 @@ export default function Dashboard() {
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setIsDrawerOpen(true)}
-                            className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 hover:border-quantum-blue/30 transition-all"
+                            className="p-4 rounded-xl bg-red-600 border-4 border-yellow-400 text-white z-[9999] hover:bg-red-700 transition-all font-bold"
                         >
-                            <Menu className="w-6 h-6 text-quantum-blue" />
+                            <Menu className="w-8 h-8" />
+                            <span className="sr-only">Open Menu</span>
                         </button>
                         <div className="font-orbitron font-bold text-lg lg:hidden">QS</div>
                     </div>
@@ -324,8 +325,8 @@ export default function Dashboard() {
             </main>
 
             {/* Floating Bottom Navigation (Mobile Only) */}
-            <div className="fixed bottom-4 left-4 right-4 z-[200] lg:hidden flex justify-center">
-                <div className="w-full max-w-sm bg-zinc-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 flex items-center justify-around shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <div className="fixed bottom-4 left-4 right-4 z-[9999] flex justify-center">
+                <div className="w-full max-w-sm bg-red-600 border-4 border-yellow-400 rounded-2xl p-4 flex items-center justify-around shadow-2xl">
                     <button
                         onClick={() => router.back()}
                         className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex flex-col items-center gap-1"
