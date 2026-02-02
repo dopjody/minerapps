@@ -74,7 +74,7 @@ export default function LoginPage() {
                         </div>
                         <h3 className="text-xl font-bold">Check your Email</h3>
                         <p className="text-zinc-400 text-sm">We've sent a magic link to <span className="text-white">{email}</span></p>
-                        <button width="100%" onClick={() => setSent(false)} className="text-[#00f2ff] text-sm hover:underline mt-4">
+                        <button onClick={() => setSent(false)} className="w-full text-[#00f2ff] text-sm hover:underline mt-4">
                             Try different email
                         </button>
                     </motion.div>
