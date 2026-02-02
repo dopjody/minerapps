@@ -12,15 +12,19 @@ import {
     Search,
     Menu,
     TrendingUp,
-    Users
+    Users,
+    ShoppingCart,
+    Brain,
+    Trophy,
+    ArrowRight
 } from "lucide-react";
 import MiningRig from "@/components/MiningRig";
 
 export default function Dashboard() {
     return (
         <div className="flex min-h-screen bg-quantum-dark text-white">
-            {/* Sidebar - Desktop Only for now */}
-            <aside className="hidden lg:flex w-64 border-r border-white/5 flex-col p-6 gap-8">
+            {/* Sidebar */}
+            <aside className="hidden lg:flex w-64 border-r border-white/5 flex-col p-6 gap-8 overflow-y-auto">
                 <div className="font-orbitron font-bold text-xl tracking-tighter">
                     QUANTUM<span className="text-quantum-blue">START</span>
                 </div>
@@ -29,6 +33,9 @@ export default function Dashboard() {
                     {[
                         { name: "Dashboard", icon: LayoutDashboard, active: true },
                         { name: "Mining Hub", icon: Cpu, active: false },
+                        { name: "Marketplace", icon: ShoppingCart, active: false },
+                        { name: "AI Optimizer", icon: Brain, active: false },
+                        { name: "Leaderboard", icon: Trophy, active: false },
                         { name: "Wallet", icon: Wallet, active: false },
                         { name: "Transactions", icon: ArrowUpRight, active: false },
                         { name: "Settings", icon: Settings, active: false },
@@ -36,12 +43,12 @@ export default function Dashboard() {
                         <button
                             key={item.name}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${item.active
-                                ? "bg-quantum-blue/10 text-quantum-blue border border-quantum-blue/20"
-                                : "text-zinc-500 hover:text-white hover:bg-white/5"
+                                    ? "bg-quantum-blue/10 text-quantum-blue border border-quantum-blue/20"
+                                    : "text-zinc-500 hover:text-white hover:bg-white/5"
                                 }`}
                         >
                             <item.icon className="w-5 h-5" />
-                            <span className="font-medium">{item.name}</span>
+                            <span className="font-medium text-sm">{item.name}</span>
                         </button>
                     ))}
                 </nav>
@@ -61,16 +68,16 @@ export default function Dashboard() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col">
+            <main className="flex-1 flex flex-col h-screen overflow-hidden">
                 {/* Header */}
-                <header className="h-20 border-b border-white/5 flex items-center justify-between px-8">
+                <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-quantum-dark/50 backdrop-blur-md z-20">
                     <div className="flex lg:hidden font-orbitron font-bold text-lg">QS</div>
 
                     <div className="hidden md:flex items-center bg-zinc-900/50 border border-white/10 rounded-full px-4 py-2 w-96">
                         <Search className="w-4 h-4 text-zinc-500 mr-2" />
                         <input
                             type="text"
-                            placeholder="Search contracts, transactions..."
+                            placeholder="Search nodes, marketplace, assets..."
                             className="bg-transparent border-none outline-none text-sm w-full"
                         />
                     </div>
@@ -83,7 +90,7 @@ export default function Dashboard() {
                         <div className="flex items-center gap-3 pl-4 border-l border-white/10">
                             <div className="flex flex-col items-end hidden sm:flex">
                                 <span className="text-sm font-bold">Alex Rivera</span>
-                                <span className="text-[10px] text-zinc-500">Verified Member</span>
+                                <span className="text-[10px] text-zinc-500 uppercase tracking-tighter">Pro Miner</span>
                             </div>
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-quantum-blue to-quantum-purple p-[1px]">
                                 <div className="w-full h-full rounded-xl bg-quantum-dark flex items-center justify-center font-bold text-xs uppercase">
@@ -95,88 +102,145 @@ export default function Dashboard() {
                 </header>
 
                 {/* Dashboard Content */}
-                <div className="p-8 space-y-8 overflow-y-auto">
-                    {/* Top Stats */}
+                <div className="p-8 space-y-8 overflow-y-auto flex-1">
+                    {/* Top Stats Card Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[
-                            { label: "Total Balance", value: "$12,482.50", sub: "+5.4% Today", icon: Wallet, color: "text-quantum-blue" },
-                            { label: "Mining Hashrate", value: "48.2 TH/s", sub: "Status: Stable", icon: Cpu, color: "text-quantum-green" },
-                            { label: "Estimated Daily", value: "0.0042 BTC", sub: "~$142.20 USD", icon: TrendingUp, color: "text-quantum-purple" },
-                            { label: "Referral Bonus", value: "$420.00", sub: "12 Actives", icon: Users, color: "text-quantum-pink" },
+                            { label: "Total Balance", value: "0.482 BTC", sub: "+$420.50 Today", icon: Wallet, color: "text-quantum-blue" },
+                            { label: "Mining Hashrate", value: "48.2 TH/s", sub: "Status: 99.9% Up", icon: Cpu, color: "text-quantum-green" },
+                            { label: "Referral Bonus", value: "12,450 DOGE", sub: "12 Actives", icon: Users, color: "text-quantum-purple" },
+                            { label: "Global Rank", value: "#142", sub: "Top 2% Globally", icon: Trophy, color: "text-quantum-pink" },
                         ].map((stat, i) => (
-                            <div key={i} className="glass-card p-6 rounded-2xl flex flex-col gap-1">
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                className="glass-card p-6 rounded-2xl flex flex-col gap-1 hover:border-white/20 transition-all cursor-default"
+                            >
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs text-zinc-500 font-bold uppercase tracking-wider">{stat.label}</span>
+                                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">{stat.label}</span>
                                     <stat.icon className={`w-4 h-4 ${stat.color}`} />
                                 </div>
                                 <div className="text-2xl font-orbitron font-bold">{stat.value}</div>
-                                <div className={`text-[10px] font-medium ${stat.sub.includes('+') ? 'text-quantum-green' : 'text-zinc-500'}`}>
-                                    {stat.sub}
-                                </div>
-                            </div>
+                                <div className="text-[10px] font-medium text-zinc-400">{stat.sub}</div>
+                            </motion.div>
                         ))}
                     </div>
 
-                    {/* Lower Grid: Rig + Activity */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Mining Status Visualizer */}
-                        <div className="lg:col-span-2 glass-card rounded-3xl p-8 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
-                            <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-quantum-blue/5 blur-[80px] rounded-full" />
+                        {/* Visualizer & Controls */}
+                        <div className="lg:col-span-2 space-y-8">
+                            <div className="glass-card rounded-3xl p-8 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
+                                <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-quantum-blue/5 blur-[80px] rounded-full" />
 
-                            <div className="flex-1 space-y-6 z-10">
-                                <div>
-                                    <h3 className="text-2xl font-orbitron font-bold">Node <span className="text-quantum-blue">B-842</span></h3>
-                                    <p className="text-zinc-400 text-sm">Quantum-Enhanced SHA-256 Engine</p>
+                                <div className="flex-1 space-y-6 z-10 w-full">
+                                    <div>
+                                        <h3 className="text-2xl font-orbitron font-bold">Node <span className="text-quantum-blue">B-842</span></h3>
+                                        <p className="text-zinc-400 text-sm italic">"Infrastructure is stable and performing above baseline."</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
+                                            <div className="text-[10px] text-zinc-500 uppercase font-bold">Quantum Core</div>
+                                            <div className="text-lg font-orbitron font-bold text-quantum-blue">ACTIVE</div>
+                                        </div>
+                                        <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
+                                            <div className="text-[10px] text-zinc-500 uppercase font-bold">Network Delay</div>
+                                            <div className="text-lg font-orbitron font-bold text-quantum-green">14ms</div>
+                                        </div>
+                                    </div>
+
+                                    <button className="w-full py-4 rounded-xl bg-quantum-blue/10 border border-quantum-blue/30 text-quantum-blue font-bold hover:bg-quantum-blue hover:text-quantum-dark transition-all text-sm uppercase tracking-widest shadow-[0_0_15px_rgba(0,242,255,0.2)]">
+                                        Boost Hash Power
+                                    </button>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                                        <div className="text-[10px] text-zinc-500 uppercase">Core Temp</div>
-                                        <div className="text-lg font-bold">42.5°C</div>
+                                <div className="relative flex justify-center items-center">
+                                    <MiningRig />
+                                </div>
+                            </div>
+
+                            {/* AI Optimization Section */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                className="glass-card rounded-3xl p-8 border-quantum-blue/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 group"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-quantum-blue/5 via-transparent to-transparent opacity-50" />
+                                <div className="flex items-center gap-6 z-10">
+                                    <div className="w-16 h-16 rounded-full bg-quantum-blue/10 flex items-center justify-center border border-quantum-blue/30 group-hover:scale-110 transition-transform">
+                                        <Brain className="w-8 h-8 text-quantum-blue" />
                                     </div>
-                                    <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                                        <div className="text-[10px] text-zinc-500 uppercase">Input Power</div>
-                                        <div className="text-lg font-bold">1.2 kW</div>
+                                    <div>
+                                        <h3 className="text-xl font-orbitron font-bold">Quantum AI <span className="text-quantum-blue">Optimizer</span></h3>
+                                        <p className="text-zinc-400 text-sm max-w-md">Our neural network is analyzing 2,400+ nodes to maximize your hash efficiency. AI boost currently active at <span className="text-quantum-green font-bold">+12.5%</span>.</p>
                                     </div>
                                 </div>
+                                <div className="z-10 w-full md:w-auto">
+                                    <button className="w-full md:w-auto px-6 py-3 rounded-xl border border-quantum-blue/50 text-quantum-blue font-bold text-xs uppercase tracking-widest hover:bg-quantum-blue hover:text-quantum-dark transition-all">
+                                        Optimize Rig
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </div>
 
-                                <button className="w-full py-4 rounded-xl bg-white/5 border border-white/10 font-bold hover:bg-quantum-blue/10 hover:border-quantum-blue/30 transition-all text-sm uppercase tracking-widest">
-                                    Manage Mining Hardware
+                        {/* Marketplace & Activity Side Column */}
+                        <div className="space-y-8">
+                            {/* Marketplace Card */}
+                            <div className="glass-card rounded-3xl p-6 flex flex-col gap-6 border-quantum-pink/20">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="font-orbitron font-bold text-quantum-pink">Nodes Market</h3>
+                                    <div className="text-[10px] px-2 py-1 rounded bg-quantum-pink/20 text-quantum-pink font-bold uppercase">Hot</div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {[
+                                        { name: "Titan SHA-256", power: "10 TH/s", price: "0.005 BTC" },
+                                        { name: "Lunar Scrypt", power: "250 MH/s", price: "1200 DOGE" },
+                                        { name: "Nebula Ethash", power: "45 MH/s", price: "0.08 ETH" }
+                                    ].map((item, i) => (
+                                        <div key={i} className="p-4 bg-white/5 border border-white/5 rounded-xl hover:border-quantum-blue/30 transition-all cursor-pointer group flex flex-col gap-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xs font-bold">{item.name}</span>
+                                                <ArrowRight className="w-3 h-3 text-zinc-500 group-hover:text-quantum-blue transition-all" />
+                                            </div>
+                                            <div className="flex justify-between items-end">
+                                                <span className="text-[10px] text-zinc-500">{item.power}</span>
+                                                <span className="text-xs font-orbitron text-quantum-blue">{item.price}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <button className="w-full py-4 rounded-xl bg-white/5 border border-white/10 font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-quantum-dark transition-all">
+                                    Browse All Nodes
                                 </button>
                             </div>
 
-                            <div className="relative flex justify-center items-center">
-                                <MiningRig />
-                            </div>
-                        </div>
+                            {/* Activity Feed */}
+                            <div className="glass-card rounded-3xl p-6 flex flex-col gap-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="font-orbitron font-bold">System Log</h3>
+                                    <div className="w-2 h-2 rounded-full bg-quantum-green animate-pulse" />
+                                </div>
 
-                        {/* Recent Activity */}
-                        <div className="glass-card rounded-3xl p-6 flex flex-col gap-6">
-                            <div className="flex items-center justify-between">
-                                <h3 className="font-orbitron font-bold">Activity</h3>
-                                <button className="text-xs text-quantum-blue hover:underline">View All</button>
-                            </div>
-
-                            <div className="space-y-4">
-                                {[
-                                    { type: 'mining', desc: 'Block reward cleared', amount: '+0.00014 BTC', time: '2 mins ago' },
-                                    { type: 'withdrawal', desc: 'Payout to Wallet', amount: '-0.012 BTC', time: '1 hour ago' },
-                                    { type: 'referral', desc: 'Friend signup (Level 1)', amount: '+12.5 DOGE', time: '4 hours ago' },
-                                    { type: 'mining', desc: 'Hashrate boost applied', amount: 'N/A', time: '12 hours ago' },
-                                ].map((act, i) => (
-                                    <div key={i} className="flex items-center gap-4 group">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 border border-white/10 group-hover:border-white/20 transition-all`}>
-                                            {act.type === 'mining' ? <Cpu className="w-4 h-4 text-quantum-blue" /> : act.type === 'withdrawal' ? <ArrowDownLeft className="w-4 h-4 text-quantum-pink" /> : <Users className="w-4 h-4 text-quantum-purple" />}
+                                <div className="space-y-4">
+                                    {[
+                                        { type: 'mining', desc: 'Block #842,501 mined', amount: '+0.00014 BTC', time: '2m' },
+                                        { type: 'referral', desc: 'New Node Joined', amount: '+12.5 DOGE', time: '1h' },
+                                        { type: 'reward', desc: 'Staking Payout', amount: '+0.0008 ETH', time: '4h' },
+                                    ].map((act, i) => (
+                                        <div key={i} className="flex items-center gap-4">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-800" />
+                                            <div className="flex-1">
+                                                <div className="text-[11px] font-bold">{act.desc}</div>
+                                                <div className="text-[9px] text-zinc-500">{act.time} ago</div>
+                                            </div>
+                                            <div className="text-[10px] font-orbitron text-quantum-green">{act.amount}</div>
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="text-xs font-bold">{act.desc}</div>
-                                            <div className="text-[10px] text-zinc-500">{act.time}</div>
-                                        </div>
-                                        <div className={`text-xs font-orbitron font-bold ${act.amount.startsWith('+') ? 'text-quantum-green' : act.amount === 'N/A' ? 'text-zinc-500' : 'text-quantum-pink'}`}>
-                                            {act.amount}
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
